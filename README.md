@@ -14,3 +14,4 @@
 
 ## Resources
 * https://www.coursera.org/courses?query=bayesian%20statistics
+* https://www.coursera.org/learn/bayesian-statistics

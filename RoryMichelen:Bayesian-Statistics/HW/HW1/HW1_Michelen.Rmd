@@ -1,0 +1,175 @@
+---
+title: "HW1"
+author: "Rory Michelen"
+date: "September 5, 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyverse)
+library(tinytex)
+Sys.setenv(PATH = paste(Sys.getenv("PATH"), "C:\\Users\\Rory\\AppData\\Local\\MiKTeX\\2.9\\miktex\\bin\\x64", sep=.Platform$path.sep))
+```
+
+# Question 1
+## Part 1
+Using the law of total probability, we can express the probability that system, S will be operational as a function of t. First, some definitions:
+
+$S$ = Event that the system will be functional  
+$E_{i}$ = Event that component $E_{i}$ will be functional  
+$H_1= E_{5}(t)$  
+$H_2=H_1^c$  
+
+$P(S)=P(S \mid H_1)P(H_1)+P(S \mid H_2)P(H_2)$  
+
+$P(S \mid H_1)=P(E_1)+P(E_3)-P(E_1)P(E_3)=e^{-t}+e^{-t/2}-e^{-3t/2}$
+
+$P(H_1)=P(E_5)=e^{-t}$  
+
+$P(S \mid H_2)=P(E_1)P(E_2)+P(E_3)P(E_4)-P(E_1)P(E_2)P(E_3)P(E_4)=e^{-3t}+e^{-5t/6}-e^{-23t/6}$  
+
+$P(H_2)=1-P(E_5)=1-e^{-t}$  
+
+$P(S)=(P(E_1)+P(E_3)-P(E_1)P(E_3))*P(E_5)+(P(E_1)P(E_2)+P(E_3)P(E_4)-P(E_1)P(E_2)P(E_3)P(E_4))*(1-P(E_5))$  
+$P(s)=(e^{-t}+e^{-t/2}-e^{-3t/2})*e^{-t}+(e^{-3t}+e^{-5t/6}-e^{-23t/6})*(1-e^{-t})$  
+
+Well, that was fun to write in LaTex! Let's move on to computation:
+
+
+```{r Q1 Shared Code}
+# Question 1
+t<-seq(0,1,by=0.001)
+l<-c(1,2,1/2,1/3,1)
+
+prob_e<-function (t,l){
+  return(exp(-1*l*t))
+}
+
+probs.at.t<-as.data.frame(t)
+probs.at.t$H1<-prob_e(t,5)
+probs.at.t$H2<-1-probs.at.t$H1
+probs.at.t$s.gv.H1<-prob_e(t,1)+
+                      prob_e(t,3)-
+                      (prob_e(t,1)*prob_e(t,3))
+probs.at.t$s.gv.H2<-(prob_e(t,1)*prob_e(t,2))+
+                      (prob_e(t,3)*prob_e(t,4))-
+                      (prob_e(t,1)*prob_e(t,2)*prob_e(t,3)*prob_e(t,4))
+
+probs.at.t$s<-with((H1*s.gv.H1)+(H2*s.gv.H2),data=probs.at.t)
+```
+
+```{r Part A Plot}
+probs.at.t%>%
+  ggplot(aes(x=t,y=s))+
+    geom_line(group=1)+
+    labs(x="Time",
+         y="Probability of Succes",
+         title="Probability of Success over Time")
+
+```
+
+Below is the computation for probability of event S at time t=1/2.
+
+```{r Part A time specific value,fig.show='hide'}
+# Time =1/2
+probs.at.t%>%
+  dplyr::filter(t==0.5)%>%
+  select(s)
+```
+
+Using this code, we get
+
+$P(s)=0.28$ for t=1/2
+
+
+## Part B
+
+Using the world-famous bayes formula, we can derive the formula for the probability that component 5 was successful at time t=1/2
+
+$P(E_5 \mid S)=\frac{P(S \mid H_1)}{P(S)}P(H_1)$
+
+Each of these probabilities were expressed as a function of t in part A. Below is the computation for time t=1/2
+
+
+```{r Part B}
+# Part B
+probs.at.t$H1.gv.s<-with(s.gv.H1*H1/s,data=probs.at.t)
+
+probs.at.t%>%
+  dplyr::filter(t==0.5)%>%
+  select(H1.gv.s)
+```
+
+And we get the result of
+
+$P(E_5 \mid S)=0.20$ for t=1/2
+
+# Question 2
+
+First, I'll define some important events
+
+Let $B_{i,j}$ = Event that the $i^{th}$ item is selected from batch j  
+Let $C_i$ = the event that the $i^{th}$ item is conforming  
+
+Next, some probabilities that will be useful later:  
+$P(B_{1,j})=0.5$ for $j \in \{1,2\}$ 
+
+$P(C_1 \mid B_{1,1})=1.0$  
+
+$P(C_1 \mid B_{1,2})=0.8$ 
+
+$P(C_1)=P(C_1 \mid B_{1,1})P(B_{1,1})+P(C_1 \mid B_{1,2})P(B_{1,2})=(1*0.5)+(0.8*0.5)=0.9$  
+
+Now, let's formulate the proposed question and plug in the above values. We were asked to find: 
+
+$P(C_2^c \mid C_1)$  
+
+$P(C_2^c \mid C_1)=1-P(C_2 \mid C_1)$   
+
+$P(C_2 \mid C_1)=P(C_2 \mid C_1,B_{1,1})*P(B_{1,1}|C_1)+P(C_2 \mid C_1,B_{1,2})*P(B_{1,2}|C_1)$  
+
+$P(C_2 \mid C_1,B_{1,1})=P(C_2 \mid B_{1,1})=1$  
+$P(C_2 \mid C_1,B_{1,2})=P(C_2 \mid B_{1,2})=0.8$  
+
+$P(B_{1,1}|C_1)=\frac{P(C_1\mid B_{1,1})}{P(C_1)}P(B_{1,1})=\frac{1}{0.9}0.5=\frac{5}{9}$  
+$P(B_{1,2}|C_1)=\frac{P(C_1\mid B_{1,2})}{P(C_1)}P(B_{1,2})=\frac{0.8}{0.9}0.5=\frac{4}{9}$  
+
+$P(C_2 \mid C_1)=1*\frac{5}{9}+\frac{8}{10}*\frac{4}{9}=\frac{41}{45}$
+
+$P(C_2^c \mid C_1)=\frac{4}{45}=0.89$
+
+# Question 3
+
+Let $P_i$ denote the event that our algorithm predicted class i for $i \in \{0,1\}$  
+Let $A_i$ denote the event that an item selected from the population is of class i for $i \in \{0,1\}$   
+Let $S_i$ denote the even that an item selected from the sample is of class i for $i \in \{0,1\}$ 
+
+It is given that:  
+$P(A_0)=0.99$  
+
+$P(A_1)=0.01$  
+
+$P(S_0)=\frac{55}{120}$  
+
+$P(S_1)=\frac{65}{120}$  
+
+$P(P_1)=\frac{70}{120}$  
+
+$P(P_1|S_1)=\frac{52}{70}$
+
+We are asked to find $P(A_1 \mid P_1)$ 
+
+$P(A_1 \mid P_1)=\frac{P(P_1 \mid A_1)}{P(P_1)}P(A_1)$  
+
+$P(P_1 \mid A_1)=(P_1 \mid S_1)=\frac{52}{70}$  
+
+$P(A_1 \mid P_1)=\frac{\frac{52}{70}}{\frac{70}{120}}*0.01=0.0135$
+
+
+
+
+
+
+

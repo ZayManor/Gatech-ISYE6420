@@ -1,0 +1,185 @@
+---
+title: "ISYE 6420: HW3"
+author: "Rory Michelen"
+date: "September 23, 2019"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Question 1
+## Part A
+
+The following information is given:
+
+(1) $f(r)=\xi rexp\{\frac{-\xi r^2}{2}\}$  
+(2) $\pi(\xi)=\lambda e^{-\lambda\xi}$  
+
+Therefore:   
+
+(3) $f(r\mid\xi)\pi(\xi)=\xi\lambda rexp\{-\xi(\lambda+\frac{r^2}{2})\}$  
+
+Since r is observed, it is a constant and we can express this as  
+
+(4) $f(r\mid\xi)\pi(\xi)$ $\alpha$ $\xi exp\{-\xi(\lambda+\frac{r^2}{2})\}$
+
+If $\theta$ followed a $Gamma(\alpha,\hat{\lambda})$ distribution, then it would have the pdf:  
+
+$f(\theta)=c(\hat{\lambda}\theta)^{\alpha-1}exp\{-\hat{\lambda}\theta\}$ for some constant, c. Note that this parameterization is using the rate parameter instead of a scale parameter. Note that (4) follows this form such that $\alpha=2$ and $\hat{\lambda}=\lambda+\frac{r^2}{2}$  
+
+With an observed value for r, $\pi(\xi \mid r)$ $\alpha$ $f(r\mid\xi)\pi(\xi)$  
+
+Therefore, $pi(\xi \mid r)\sim Gamma(2,\lambda+\frac{r^2}{2})$
+
+
+## Part B
+In part a, we demonstrated that $\pi(\xi \mid r)\sim Gamma(2,\lambda+\frac{r^2}{2})$ for a single observation r. However, in this scenario, we have multiple observations.
+
+$f(r_1,r_2,...,r_n \mid \xi)=\prod_{i=1}^{n}f(r_i\mid\xi)=c\xi^nexp\{\xi\sum_{i=1}^{n}\frac{r_i^2}{2}\}$ for some constant, c equal to the product of our observations.
+
+From part A, we saw that $\pi(\xi)=\lambda e^{-\lambda\xi}$ for some lambda. So,  
+
+$f(r_1,r_2,...,r_n \mid \xi)\pi(\xi)$ $\alpha$ $\xi^nexp\{\xi(\lambda+\sum_{i=1}^{n}\frac{r_i^2}{2})\}$  
+
+Therefore, $\pi(\xi \mid r_1,r_2,...r_n)\sim Gamma(n+1,\lambda+\sum_{i=1}^{n}\frac{r_i^2}{2})$  which is consistent with the special case of i=1 found in part A.
+
+Given the four observations mentioned in the question statement
+
+ $\pi(\xi \mid r_1,r_2,r_3,r_4)\sim Gamma(5,\lambda+27)$ for some lambda.  
+ 
+ With this parameterization, $E\xi=\frac{\alpha}{\hat{\lambda}}=\frac{2}{\lambda+27}$ which is a bayes estimate.
+
+## Part C
+When $\lambda=1$, the posterior follows the following distribution: $\pi(\xi \mid r_1,r_2,r_3,r_4)\sim Gamma(5,28)$  
+
+The 95% equitailed credible set is $[0.05798,0.36577]$
+
+```{r}
+alpha=5
+beta=28
+type_1=0.05
+
+lb<-qgamma(type_1/2,alpha,rate=beta)
+ub<-qgamma(1-(type_1/2),alpha,rate=beta)
+
+point.estimate=alpha/beta
+
+data<-data.frame(t=seq(0,1,0.001))%>%
+  mutate(pdf=dgamma(t,alpha,rate=beta))
+
+data%>%
+  ggplot(aes(x=t,y=pdf))+
+    geom_line()+
+    geom_ribbon(aes(x=ifelse(t<lb | t>ub,NA,t),ymin=0,ymax=pdf),fill="darkorange")+
+    geom_vline(xintercept=point.estimate)+
+    annotate('text',label='Point Estimate',x=point.estimate+0.085,y=0.3)+
+  labs(title='Equitailed 95% Credible Set for Gamma(5,28) variable',subtitle = 'Credible set boundaries and point estimate provided',x='xi',y='f(xi)' )
+
+```
+
+# Question 2
+
+## Part A
+
+### Eliciting a prior
+
+We are provided the following information about p:
+
+(1) $\pi(p)\sim Gamma(\alpha,\beta)$   
+(2) $\mu_p=0.9$  
+(3) $\mu_p-2\sigma=0.8$
+
+
+We also know from wikipedia that for a beta distribution the following is true:
+
+(4) $\mu=\frac{\alpha}{\alpha+\beta}$
+(5) $\sigma^2=\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$
+
+From (2) and (4), we know that $\alpha=9\beta$, which can be used to simplify $\sigma^2$ to a function of a single variable, $\beta$  
+
+(6) $\sigma^2=\frac{9\beta^2}{(10\beta)^2(10\beta+1)}$  
+
+Using (3) and (6), we can solve for $\beta$  
+
+$\sigma=0.05$  
+
+$0.05^2=\frac{9\beta^2}{(10\beta)^2(10\beta+1)}$  
+
+This yields $\beta=3.5$, which allows us to solve for $\alpha$ as $\alpha=31.5$
+
+Therefore we've elicited a prior of $\pi(p)\sim Beta(31.5,3.5)$ which has a pdf of 
+
+(7) $\pi(p)=cp^{\alpha-1}(1-p)^{\beta -1}$ for $alpha=31.5$ and $\beta=3.5$ and some constant, c  
+
+### Finding the likelihood distribution
+
+Given a proportion p, the probability of experiencing k successes after n trials can be modeled as a binomial distribution. That is,
+
+(8) $f(n,k \mid p)=\binom{n}{k}p^k(1-p)^{n-k}$ such that $n=30$ and $k=22$  
+
+
+### Finding the posterior
+
+Using (7) and (8) we get that:  
+
+$f(n,k\mid p)\pi(p)=cp^k(1-p)^{n-k}p^{\alpha-1}(1-p)^{\beta -1}$  
+
+$f(n,k\mid p)\pi(p)$ $\alpha$ $p^{\alpha+k-1}(1-p)^{n-k+\beta-1}$
+
+Therefore, the posterior can be modeled as:  
+
+$\pi(p\mid n,k)\sim Beta(\alpha+k,n-k+\beta)$ using the above mentioned values of $n=30,k=22,\alpha=31.5,\beta=3.5$, we get that  
+
+$\pi(p\mid n=30,k=22)\sim Beta(53.5,11.5)$ and has pdf:  
+
+$f(p\mid n=30,k=22)=cp^{52.5}(1-p)^{10.5}$
+
+### Finding the bayes estimator
+Using equation (4) we get that  
+
+$Ep=\frac{53.5}{53.5+11.5}$ therefore our bayes estimator of p is  
+
+$Ep=0.82308$
+
+This intuitively makes sense. Although our experiment yielded a frequnetist estimate of $\frac{22}{30}=0.733$, our prior distribution was fairly narrow and therefore had a lot of influence over the posterior. I want to know who this "expert" is and why they have such confidence that the variance is so low. Typical egotistical scientist.
+
+## Part B
+Using the code below, we find the equitailed credible interval of [0.7222,0.9051]
+
+```{r}
+alpha<-53.5
+beta<-11.5
+type_1<-0.05
+lb<-qbeta(type_1/2,alpha,beta)
+ub<-qbeta(1-(type_1/2),alpha,beta)
+
+lb
+ub
+
+```
+
+## Part C
+
+Using the code below, we confirm that $H_0$ is accepted and $H_1$ is rejected. However we could have also inferred this since $H_1$ is outside the bounds of the credible interval.
+
+```{r}
+critical_value<-4/5
+h1<-pbeta(critical_value,alpha,beta)
+h0<-1-h1
+
+h0
+h1
+
+```
+
+
+## Part D
+
+See the included ODC file for winbugs models. 
+
+
+
+

@@ -1,0 +1,317 @@
+
+\documentclass[12pt]{article}
+\usepackage{fancybox}
+\usepackage{fullpage}
+\usepackage{psfig}
+\usepackage{url}
+%\newcommand{\onef}[3]{\psfig{figure=#1,width=#2,height=#3}}
+\usepackage{xcolor}
+\usepackage{color, colortbl}
+%\definecolor{lightgray}{gray}{0.9}
+
+\newcommand{\onef}[3]{
+\begin{center}~
+{\psfig{figure=#1,width=#2,height=#3}}
+\vskip -0.15truein
+\end{center}}
+%___
+%--------------------------------------------
+\newcommand{\twof}[4]
+{
+\hbox to\hsize{\hss
+    \vbox{\psfig{figure=#1,width=#3,height=#4}}\qquad
+    \vbox{\psfig{figure=#2,width=#3,height=#4}}
+    \hss}
+}
+
+
+%---------------------------------
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{lipsum}
+\mdfdefinestyle{MyFrame}{%
+    linecolor=black,
+    outerlinewidth=1.5pt,
+    roundcorner=5pt,
+    innertopmargin=\baselineskip,
+    innerbottommargin=\baselineskip,
+    innerrightmargin=20pt,
+    innerleftmargin=20pt,
+    backgroundcolor=gray!20!white}
+
+
+ \newcommand{\be}{\begin{eqnarray}}
+\newcommand{\ee}{\end{eqnarray}}
+\newcommand{\ba}{\begin{eqnarray*}}
+\newcommand{\ea}{\end{eqnarray*}}
+
+
+
+
+\begin{document}
+\thispagestyle{empty}
+%\addtocounter{page}{-1}
+\vspace*{-0.1in}
+
+\begin{center}
+        { \Large \bf   7.4 EXERCISES}
+\end{center}
+\noindent {\bf BMED6420}
+
+\noindent  Brani  Vidakovic;  Fall 2018
+
+
+\noindent Consult the class slides, hints, and  cited literature for
+the solution of exercise problems.
+
+%various models
+\vspace*{0.2in}
+\noindent  {\bf 1.  Beetles (Bliss Data).~}
+In his 1935 paper\footnote{
+Bliss, C. I. (1935).
+The calculation of the dose-mortality curve. {\it Ann. Appl. Biol.}, {\bf 22}, 134--167.},
+ Bliss provides a table
+showing a number of flour beetles killed after 5 hours of exposure to
+gaseous carbon disulfide at various concentrations.
+ This data set has since been used extensively
+by statisticians to illustrate and compare models for binary and binomial data.
+
+The program shows use of logit, probit, cloglog, loglog and cauchyit links.
+
+
+\vspace*{0.2in}
+
+\twof{beetles01.eps}{beetles02.eps}{3.1in}{3.7in}
+
+
+\vspace*{0.2in}
+\noindent  {\bf 2.  Vasoconstriction.~}
+The data give the presence or absence ($y_i=1$  or $0$) of vasoconstriction
+ in the skin of the fingers following
+inhalation of a certain volume of air ($v_i$) at a certain average rate
+($r_i$). Total number of records is 39.
+The candidate models for analyzing the relationship are the
+ usual { \tt  logit, probit, cloglog, loglog,} and {\tt cauchyit}  models.
+
+Data are given as follows (a startup file {\tt vasoconstriction0.odc} is
+also applied to save you some time):
+
+\begin{verbatim}
+  y:  1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,
+  0,1,0,0,0,0,1,0,1,0,1,0,1,0,0,1,1,1,0,0,1
+
+  v: 3.7, 3.5, 1.25, 0.75, 0.8, 0.7, 0.6, 1.1, 0.9, 0.9,
+  0.8, 0.55, 0.6, 1.4, 0.75, 2.3, 3.2, 0.85, 1.7, 1.8,
+  0.4, 0.95, 1.35, 1.5, 1.6, 0.6, 1.8, 0.95, 1.9, 1.6,
+  2.7, 2.35, 1.1, 1.1, 1.2, 0.8, 0.95, 0.75, 1.3
+
+  r: 0.825, 1.09, 2.5, 1.5, 3.2, 3.5, 0.75, 1.7, 0.75,
+  0.45, 0.57, 2.75, 3, 2.33, 3.75, 1.64, 1.6, 1.415,
+  1.06, 1.8, 2, 1.36, 1.35, 1.36, 1.78, 1.5, 1.5, 1.9,
+  0.95, 0.4, 0.75, 0.3, 1.83, 2.2, 2, 3.33, 1.9, 1.9, 1.625
+\end{verbatim}
+
+(a) Transform covariates $v$ and $r$ as
+\ba
+x_1 = \log(10 \times v),~~~~x_2 = \log(10 \times r).
+\ea
+
+(b) Using WinBUGS estimate posterior
+ means for coefficients in the logit model.
+ Use noninformative priors on all coefficients.
+
+
+(c) For a subject with $v=r=1.5$, find the probability of
+  vasoconstriction.
+
+
+(d) Which of the five links: logit, probit, cloglog, loglog, and cauchyit,
+has smallest deviance. An example for use of the five links is
+provided: {\tt beetles1.odc}. Uncomment and run one link at the time.
+
+
+
+
+
+\vspace{0.3in}
+
+ \noindent {\bf 3. Caesarean Delivery: Categorical Response.~}
+Table \ref{tab:cs} contains grouped data on infection of mothers after a C-section, collected at the
+Clinical Center of the University of Munich.
+\footnote{Tutz, G. (2000). Die Analyse kategorialer Daten - eine anwendungsorientierte Einführung in Logit-Modellierung und kategoriale Regression. Oldenbourg-Verlag.}
+The response variable has three categories: Infection of type I, Infection of type II, and No infection.
+For each mother three covariates are collected:
+
+$$ \mbox{NOPLAN }= \left\{ \begin{array}{ll} 1 & \mbox{{~~~}C-section was not planned,}\\
+   0 & \mbox{{~~~}Planned.} \end{array}\right. $$
+
+
+$$ \mbox{RISK }= \left\{ \begin{array}{ll} 1 & \mbox{{~~~}Risk factors present,}\\
+   0 & \mbox{{~~~}No risk factors.} \end{array}\right. $$
+
+
+$$ \mbox{ANTIB }= \left\{ \begin{array}{ll} 1 & \mbox{{~~~}Antibiotics given as prophylaxis,}\\
+   0 & \mbox{{~~~}No antibiotics given.} \end{array}\right. $$
+
+
+\begin{table}[h]
+\centering
+\caption{\small Data on infections for 251 C-sections.\label{tab:cs} }
+\vspace*{0.1in}
+\begin{tabular}{llllllll}
+\hline
+  & \multicolumn{3}{l}{C-section} &  & & & \\
+  \cline{2-8}
+    & \multicolumn{3}{l}{Planned} & & \multicolumn{3}{l}{Unplanned}  \\
+   \cline{2-4}
+   \cline{6-8}
+   & \multicolumn{3}{l}{Infection} & & \multicolumn{3}{l}{Infection}  \\
+   \cline{2-4}
+   \cline{6-8}
+   & I & II & No &   & I & II &  No \\
+\hline
+Antibiotics  & & &  & ~~~~~ & & &  \\
+{~~~~~}Risk factor & ~~0 & ~~1 & 17 &  & ~~4 & ~~7 & 87 \\
+{~~~~~}No risk factor & ~~0 & ~~0 & ~~2 &  & ~~0 & ~~0 & ~~0 \\
+\hline
+No Antibiotics  & & &  & ~~~~~ & & &  \\
+{~~~~~}Risk factor & 11 & 17 & 30 &  & 10 & 13 & ~~3 \\
+{~~~~~}No risk factor & ~~4 & ~~4 & 32 &  & ~~0 & ~~0 & ~~9 \\
+\hline
+\end{tabular}
+\end{table}
+
+(a) Given the covariates, establish a multinomial model, where the outcome 'No infection' serves as a baseline.
+
+
+(b) A new C-section delivery for a mother
+ with covariates (NOPLAN, RISK, ANTIBIO)=(1,0,0) is to be evaluated for risks of infection.
+ What are estimated probabilities of no infection, and type I and II infections.
+
+\vspace*{0.1in}
+\noindent {\sl Hint:} ~Consult {\tt NHANESmulti.odc} discussed in UNIT7
+
+\vspace*{0.3in}
+
+\noindent {\bf 4. Magnesium Ammonium Phosphate and Chrysanthemums.~}
+%
+Walpole et al.\ (2007)  provide data from a study
+on the effect of magnesium ammonium phosphate on the height of chrysanthemums,
+which was conducted at George Mason  University in order to determine a possible
+optimum level of fertilization, based on the enhanced vertical growth
+response of the chrysanthemums. Forty chrysanthemum seedlings were assigned
+to 4 groups, each containing 10 plants. Each was planted in a similar pot
+containing a uniform growth medium. An increasing
+concentration of MgNH$_4$PO$_4$, measured in grams per  bushel, was added to each plant. The 4
+groups of plants were grown under uniform conditions in a greenhouse for a
+period of 4~weeks. The treatments and the respective changes in heights,
+measured in centimeters, are given in the following table:
+
+\begin{center}
+\begin{tabular}{|r|r|r|r|}
+\hline
+\multicolumn{4}{|c|}{Treatment} \\
+\hline
+~50 g/bu & 100 g/bu & 200 g/bu & 400 g/bu\\
+\hline
+13.2~ & 16.0~ &  7.8~ & 21.0~ \\
+12.4~ & 12.6~ & 14.4~ & 14.8~ \\
+12.8~ & 14.8~ & 20.0~ & 19.1~ \\
+17.2~ & 13.0~ & 15.8~ & 15.8~ \\
+13.0~ & 14.0~ & 17.0~ & 18.0~ \\
+14.0~ & 23.6~ & 27.0~ & 26.0~ \\
+14.2~ & 14.0~ & 19.6~ & 21.1~ \\
+21.6~ & 17.0~ & 18.0~ & 22.0~ \\
+15.0~ & 22.2~ & 20.2~ & 25.0~ \\
+20.0~ & 24.4~ & 23.2~ & 18.2~ \\
+\hline
+\end{tabular}
+\end{center}
+
+Solve the problem as a Bayesian one-way ANOVA. Use STZ constraints
+on treatment effects.
+
+(a) Do different concentrations
+of MgNH$_4$PO$_4$ affect the average attained height of chrysanthemums? Look at the 95\% credible sets for the differences between treatment effects.
+
+(b) Find the 95\% credible set for the contrast $\mu_1 - \mu_2 - \mu_3 + \mu_4.$
+
+
+
+
+  \vspace*{0.3in}
+\noindent {\bf 5. Third-degree Burns.}~ %===============================================
+%
+The data for this exercise, discussed in Fan et al. (1995), refer to $n=435$ adults who were treated for third-degree burns by the University of Southern California General Hospital Burn Center. The patients were grouped according to the area of third-degree burns on the body. For each midpoint of the groupings ``log(area +1),'' the number of patients in the corresponding group who survived and the number who died from the burns was recorded:
+
+
+\begin{center}
+\begin{tabular}{lcc}
+\hline
+Log(area+1) & Survived & Died \\
+\hline
+1.35 & 13 & ~~0\\
+1.60 & 19 & ~~0\\
+1.75 & 67 & ~~2 \\
+1.85 & 45 & ~~5 \\
+1.95 & 71 & ~~8 \\
+2.05 & 50 & 20\\
+2.15 & 35 & 31 \\
+2.25 & ~~7 & 49 \\
+2.35 & ~~1 & 12\\
+\hline
+\end{tabular}
+\end{center}
+
+(a) Fit the logistic
+regression on the probability of death due to third-degree burns with
+the  covariate {\tt x = log(area+1)}. What is the deviance?
+
+
+(b) Using your model, estimate find the posterior probability of survival for a person for which {\tt log(area + 1)} equals 2.
+
+
+(c) Repeat (a) with probit and complemenry log-log links.
+In terms of deviance, which morel provides the best fit.
+
+  \vspace*{0.3in}
+\noindent {\bf 6.  Shocks!~}
+An experiment was conducted to assess the effect of
+small electrical currents on farm animals, with the eventual goal
+of understanding the effects of high-voltage powerlines on
+livestock.  The experiment was carried out with seven cows, and
+six shock intensities, 0, 1, 2, 3, 4, and 5 milliamps (shocks on
+the order of 15 milliamps are painful for many humans.\footnote{ C. F.
+Dalziel, J.B. Lagen and J. L. Thurston, {\it Electric shocks},
+\textit{Trans IEEE} \textbf{60} (1941), 1073-1079. }  Each cow was
+given 30 shocks, five at each intensity, in random order.  The
+entire experiment was then repeated, so each cow received a total
+of 60 shocks.  For each shock the response, mouth movement, was
+either present or absent.  The data as quoted give the total
+number of responses, out of 70 trials, at each shock level.  We
+ignore cow differences and differences between blocks
+(experiments).
+
+\begin{center}
+  \begin{tabular}{cccc}                                             \hline
+    Current         & Number of     & Number of  & Proportion of \\
+    (milliamps) $x$ & Responses $y$ & Trials $n$ & Responses $p$ \\ \hline
+          0         &       0       &     70     &     0.000     \\
+          1         &       9       &     70     &     0.129     \\
+          2         &      21       &     70     &     0.300     \\
+          3         &      47       &     70     &     0.671     \\
+          4         &      60       &     70     &     0.857     \\
+          5         &      63       &     70     &     0.900     \\ \hline
+  \end{tabular}
+\end{center}
+As in Exercise Beetles (Bliss Data) model $y$ as a function of $x$ via binary regression with 5 different links and propose the link that minimizes the deviance.
+
+ \vspace*{0.3in}
+\noindent {\bf 7.  Three WinBUGS Programs and GLM Practice.~}
+Three WinBUGS programs are supplied: iop2.odc, NBreg.odc, and 
+terrapins.odc.
+
+Read intro to the programs (preables in ODC files) and run them on your computer.
+Understand the output.
+
+
+\end{document}

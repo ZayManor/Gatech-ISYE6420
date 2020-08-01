@@ -1,0 +1,73 @@
+Instructions for loading WinBUGS in Mac/Linux systems. Suggestions are from my Spring 2015 class. 
+
+
+
+Suggestion 1 (Jen Teshera-Levye) : 
+
+
+1. WINE is available free and open source for Linux and Mac to run (some) Windows programs. 
+WinBUGS should work pretty well because it's no longer updating.
+
+ 2. To install WINE, go to the website: 
+https://www.winehq.org/ (If you use Linux with a package manager, it should be in most standard repositories. 
+ 
+  For Debian/Ubuntu - sudo apt-get install wine.) Installing Wine will ask you to create a "C" drive 
+and set it up as if it's a Windows file system.
+
+3. Download the WinBUGS executable file, and right click
+ to install using Wine. It'll probably be slow - be patient.
+
+4. To install the patch and key file,
+ download these and put them somewhere in Wine's drive_c folder so you can access them from WinBUGS's file menu. 
+
+   This might be a hidden folder - home/.wine/drive_c (not sure how this will be created on a mac,
+ that's how it works in Linux.) From here, you should 
+   just be able to follow the instructions on the WinBUGS web
+site.
+
+
+
+
+
+
+Suggestion 2 (James Normington): 
+
+1. Download Wine from https://www.winehq.org/download/ubuntu2
+2. 
+Download XQuartz 2.7.7 from http://xquartz.macosforge.org/landing/ if you don't have X11 installed for Mac
+3.
+ Download a "zipped version of the whole file structure" from 
+
+http://www.mrc-bsu.cam.ac.uk/software/bugs/the-bugs-project-winbugs/
+
+
+4. Copy all of the text in 
+
+http://www.mrc-bsu.cam.ac.uk/wp-content/uploads/WinBUGS14_cumulative_patch_No3_06_08_07_RELEASE.txt
+5. 
+
+In WinBUGS: File > New > paste the text > Tools > Decode
+6. 
+Copy all of the text in http://www.mrc-bsu.cam.ac.uk/wp-content/uploads/WinBUGS14_immortality_key.txt
+7. 
+In WinBUGS: File > New > paste the text > Tools > Decode
+
+
+
+
+
+
+Suggestion 3 
+(Austin Cole):
+
+Since the process to install WINE on mac can become involved, and Ubuntu is a useful
+ system to have for many other reasons, 
+I recommend building an Ubuntu virtualbox, then 
+installing WINE & WinBugs on that machine using Jen's instructions. 
+
+Instructions for building 
+a virtualbox on Mac can be found below (despite being two years old, it's still accurate).
+
+ 
+
+http://osxdaily.com/2012/03/27/install-run-ubuntu-linux-virtualbox/

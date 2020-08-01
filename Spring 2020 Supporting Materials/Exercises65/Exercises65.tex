@@ -1,0 +1,344 @@
+
+\documentclass[12pt]{article}
+\usepackage{fancybox}
+\usepackage{fullpage}
+\usepackage{psfig}
+\usepackage{url}
+%\newcommand{\onef}[3]{\psfig{figure=#1,width=#2,height=#3}}
+\usepackage{xcolor}
+\usepackage{color, colortbl}
+%\definecolor{lightgray}{gray}{0.9}
+
+\newcommand{\onef}[3]{
+\begin{center}~
+{\psfig{figure=#1,width=#2,height=#3}}
+\vskip -0.15truein
+\end{center}}
+
+%___
+%--------------------------------------------
+\newcommand{\twof}[4]
+{
+\hbox to\hsize{\hss
+    \vbox{\psfig{figure=#1,width=#3,height=#4}}\qquad
+    \vbox{\psfig{figure=#2,width=#3,height=#4}}
+    \hss}
+}
+
+
+%---------------------------------
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{lipsum}
+\mdfdefinestyle{MyFrame}{%
+    linecolor=black,
+    outerlinewidth=1.5pt,
+    roundcorner=5pt,
+    innertopmargin=\baselineskip,
+    innerbottommargin=\baselineskip,
+    innerrightmargin=20pt,
+    innerleftmargin=20pt,
+    backgroundcolor=gray!20!white}
+
+
+
+
+
+\begin{document}
+\thispagestyle{empty}
+%\addtocounter{page}{-1}
+\vspace*{-0.1in}
+
+\begin{center}
+        { \Large \bf   6.5 EXERCISES}
+\end{center}
+\noindent {\bf BMED6420}
+
+\noindent  Brani  Vidakovic;  Fall 2018
+
+
+\noindent Consult the class slides, hints, and  cited literature for
+the solution of exercise problems.
+
+
+
+\vspace{0.5in}
+
+ \noindent {\bf 1.   Bayes' Net - Pancreatic Cancer.~}
+
+ 
+Project by BME Student Team: Claire Alpaugh, Jeff Bair, Catherine Gu, Sheng Jiang, Yeonghoon Joung, Saswat Panda, Sarah Reed, Jose Antonio Vasquez
+
+Pancreatic Cancer 4th leading cause of cancer deaths in the US.
+Majority of diagnoses happen  in late stage
+
+1 Year survival rate: 25\%
+
+5 Year survival rate: 6\%
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+\multicolumn{3}{ c }{\underline{Pancreatic Cancer (P)}}\\
+Risk Factor & Medical test & Symptoms \\  \hline
+Diabetes ($D$) & EUS-FNA ($E$) & Abdominal Pain ($A$) \\
+Family History ($F$) & Antigen CA 19-9 ($Ca$) & Weight Loss ($W$) \\
+Chronic Pancreatitis ($C$) & MRI ($M$) &  \\
+Jaundice ($J$)  & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h]
+\onef{pancreatic.eps}{3.7in}{3in}
+\end{figure}
+
+
+{\small
+\begin{verbatim}
+model
+{
+jaundice ~ dcat(p.jaundice [ ] );
+family ~ dcat(p.family [ ] );
+pancreatitis ~ dcat(p.pancreatitis [ ]);
+diabetes ~ dcat(p.diabetes [ ]);
+mri ~ dcat(p.mri [ jaundice, ] );
+ca19 ~ dcat(p.ca19 [ family, pancreatitis, diabetes, ] );
+eus ~ dcat(p.eus [ mri, ca19,] );
+cancer ~ dcat(p.cancer [ eus,] );
+weight ~ dcat(p.weight [ cancer,] );
+abdominal ~ dcat( p.abdominal [cancer,]);
+}
+
+list(p.jaundice= c( 0.9996, 0.0004),
+p.family= c(0.50,0.50),
+p.pancreatitis= c(0.9981,0.0019),
+p.diabetes=c(0.917,0.083),
+p.mri= structure(.Data = c(0.99, 0.01,0.20, 0.80), .Dim = c(2,2) ),
+ p.ca19=structure(.Data = c(0.9999, 0.0001, 0.60, 0.40, 0.50,0.50,
+ 0.25, 0.80, 0.35,0.65, 0.30, 0.70, 0.30, 0.70, 0.15, 0.85), .Dim =c(2,2,2,2) ),
+p.eus= structure(.Data = c(0.999, 0.001, 0.20, 0.80, 0.40, 0.60, 0.10, 0.90),
+.Dim = c(2,2,2) ),
+p.cancer= structure(.Data = c(0.90, 0.10, 0.40, 0.60), .Dim =c(2,2) ),
+p.weight= structure(.Data = c(0.50, 0.50, 0.05, 0.95), .Dim =c(2,2) ),
+p.abdominal = structure(.Data = c(0.50, 0.50, 0.10, 0.90), .Dim =c(2,2) ),
+family=(nhe, 1, or 2), pancreatitis =(nhe, 1, or 2), eus =(nhe, 1, or 2),
+ca19 =(nhe, 1, or 2),mri =(nhe, 1, or 2), jaundice =(nhe, 1, or 2),
+diabetes =(nhe, 1, or 2), abdominal =(nhe, 1, or 2))
+#nhe= no hard evidance/just commented out
+\end{verbatim}
+}
+
+%\begin{figure}[h]
+%\onef{pancreatic.eps}{2.7in}{2in}
+%\end{figure}
+
+\vspace*{0.2in}
+\hrule
+\vspace*{0.2in}
+
+{\bf 1.}
+Sally is a healthy individual with no prominent risk factors or biomarkers for pancreatic cancer.  What is the probability that she will get pancreatic cancer?
+
+Scenario 1 (hard evidence):
+family = 1, pancreatitis = 1, eus = 1, mri = 1, jaundice = 1, diabetes = 1, ca19 = 1, weight = 1, abdominal = 1
+
+Probability: 0.3\%
+
+
+\vspace*{0.2in}
+\hrule
+\vspace*{0.2in}
+
+
+
+{\bf 2.}
+Robert has diabetes and has a family history of pancreatic cancer.  Because of these risk factors, he underwent a test for pancreatic scan and was found to have a positive MRI.  What is the probability that he will get pancreatic cancer?
+
+Scenario 2 (hard evidence):
+family = 2, pancreatitis = 1, mri = 2, jaundice = 1, diabetes = 2, weight = 1, abdominal =1
+
+Probability: 2.1\%
+
+
+\vspace*{0.2in}
+\hrule
+\vspace*{0.2in}
+
+
+
+{\bf 3.} Jennifer has a family history of pancreatic cancer as well as chronic pancreatitis.  It is known that she has high levels of the biomarker CA 19-9 in the body.  She has recently been experiencing abdominal pains.  What is the probability that she will get pancreatic cancer?
+
+Scenario 3 (hard evidence):
+family = 2, pancreatitis = 2, jaundice = 1, diabetes = 1, ca19 = 2, weight = 1, abdominal = 2
+
+Probability: 15.7\%
+
+
+\vspace*{0.2in}
+\hrule
+\vspace*{0.2in}
+
+
+{\bf 4.} Sam has lost weight recently due to the fact that he has been diagnosed with jaundice.  Because jaundice is a risk factor to pancreatic cancer he had a screening done.  One of the results from his screening stated that he had elevated levels of CA 19-9.  What is the probability that he has pancreatic cancer?
+
+Scenario 4 (hard evidence):
+family = 1, pancreatitis = 1, jaundice = 2, diabetes = 1, ca19 = 2, weight = 2, abdominal = 1
+
+Probability: 31.2\%
+
+
+\vspace*{0.2in}
+\hrule
+\vspace*{0.2in}
+
+
+{\bf 5.}
+Ava has been developing many health problems recently. She has been diagnosed with diabetes, chronic pancreatitis, and jaundice. She also has a family history of pancreatic cancer.  She has recently been having abdominal pains as well as unexpected weight loss.  When tested for pancreatic cancer the results show elevated levels for CA 19-9 and positive results with both EUS-FNA(biopsy) and MRI.  What is the probability she has pancreatic cancer?
+
+Scenario 5 (hard evidence):
+family = 2, pancreatitis = 2, eus = 2, mri =2, jaundice = 2, diabetes = 2, ca19 = 2, weight = 2, abdominal = 2
+
+Probability: 83.9\%
+
+\vspace*{0.3in}
+{\bf References}
+
+ \leftskip 0.3truein
+ \parindent -0.3truein
+
+
+{\footnotesize
+Lee, Michael X., and Muhammad W. Siaf.``Screening for Early Pancreatic Ductal Adenocarcinoma: An Urgent Call!" J. Pancreas (online) 10.2 (2009): 104-08. 17 Mar. 2009. Web. 8 Apr. 2012.
+
+Permuth-Wey, Jennifer, and Kathleen M. Egan. ``Family History Is a Signi?cant Risk Factor for Pancreatic Cancer: Results from a Systematic Review and Meta-analysis." Familial Cancer 117th ser. 8.109 (2008). 2 Sept. 2008. Web. 8 Apr. 2012.
+
+Turowska, Aldona, Urzula Lebkowska, Bozena Kubas, Jacek R. Janica, Jerzy R. Ladny, and Kazimierz Kordecki. ``The Role of Magnetic Resonance Imaging (MRI) with Magnetic Resonance Cholangiopancreatography (MRCP) in the Diagnosis and Assessment of Resectability of Pancreatic Tumors." Med Sci Monit 13: 90-97. 2007. Web. 8 Apr. 2012.
+
+Everhart, J. and D. Wright (1995). ``Diabetes Mellitus as a Risk Factor for Pancreatic Cancer." JAMA: The Journal of the American Medical Association 273(20): 1605-1609.
+
+Fuchs, CS, GA Colditz, MJ Stampfer, EL Giovannucci, DJ Hunter, EB Rimm, WC Willett, and Fe Speizer. ``A Prospective Study of Cigarette Smoking and the Risk of Pancreatic Cancer." Archives of Internal Medicine 156.19 (1996): 2255-266. Print.
+
+Fernandez, E., C. La Vecchia, et al. (1995). ``Pancreatitis and the risk of pancreatic cancer." Pancreas 11(2): 185-189.
+
+}
+
+ \leftskip 0truein
+ \parindent 0.2truein
+
+\newpage
+\vspace*{0.3in}
+\noindent {\bf Use of Command {\it cumulative}.~}
+
+
+\begin{figure}[h]
+\onef{cumu.eps}{5.7in}{5.5in}
+\end{figure}
+
+\newpage
+\vspace*{0.3in}
+\noindent {\bf How Many Trick.~}
+\begin{figure}[h]
+\onef{howmany.eps}{5.7in}{5.5in}
+\end{figure}
+
+
+\newpage
+\vspace*{0.3in}
+\noindent {\bf Birnmbaum-Saunders Distribution.~}
+
+\begin{figure}[h]
+\onef{bisa.eps}{5.7in}{5.5in}
+\end{figure}
+
+
+
+\newpage
+\vspace*{0.3in}
+\noindent {\bf Jeremy and Exponential Power Distribution.~}
+
+\begin{figure}[h]
+\onef{jeremypd.eps}{5.7in}{5.5in}
+\end{figure}
+
+
+\newpage
+\vspace*{0.3in}
+\noindent {\bf Multiply Matrices.~}
+
+\begin{figure}[h]
+\onef{matrixmultiply.eps}{5.7in}{5.5in}
+\end{figure}
+
+
+\newpage
+\vspace*{0.3in}
+\noindent {\bf Jeremy via Zero Trick.~}
+
+\begin{figure}[h]
+\onef{jeremyzt.eps}{5.7in}{5.5in}
+\end{figure}
+
+
+\newpage
+\vspace*{0.3in}
+\noindent {\bf Restrict the Distribution.~}
+
+\begin{figure}[h]
+\onef{threeway.eps}{5.7in}{5.5in}
+\end{figure}
+
+
+
+
+\vspace*{0.3in}
+\noindent {\bf Moon Illusion~}
+Make Doodle Plot that corresponds to the code bellow.
+
+
+Kaufman and Rock (1962) concluded that the commonly 
+observed fact that the moon near the horizon appears larger 
+than does the moon at its zenith (highest point overhead) 
+could be explained on the basis of the greater  apparent
+distance of the moon when it is at the horizon. As part of a 
+very complete series  of experiments, the authors initially
+sought to estimate the moon horizon  so as to match the size
+of a standard ``moon'' that appeared at its zenith,  
+or vice versa. (In these measurements, they used not the 
+actual moon but an artificial one created with special
+apparatus.) One of the first questions we might ask is 
+whether there really is a moon illusion - that is, whether
+a larger setting is required to match a horizon moon or 
+a zenith moon. The following data for 10 subjects are 
+taken from Kaufman and Rock's paper and represent 
+the ratio of the diameter of the variable and standard 
+moons. A ratio of 1.00 would indicate no illusion, whereas 
+a ratio other than 1.00 would represent an illusion.
+(For example, a ratio of 1.50 would mean that the 
+horizon moon appeared to have a diameter 1.50 times 
+the diameter of the zenith moon.)
+      
+Evidence in support of an illusion would require that we
+reject $H_0: \mu = 1.00 $ in favor of $H_1: \mu > 1.00.$
+
+\begin{verbatim}
+model{
+for (i in 1:n){
+X[i] ~ dnorm(mu, prec)
+}
+mu ~ dnorm(0, 0.00001)
+prec ~ dgamma(0.0001, 0.0001)
+sigma <- 1/sqrt(prec)
+#TEST
+prH1 <- step(mu - 1)
+}
+DATA
+list(n=10, X=c(1.73, 1.06, 2.03, 1.40, 0.95, 1.13, 1.41, 1.73, 1.63, 1.56) )
+
+INITS
+list(mu = 0, prec=1)
+
+Kaufman, L. and Rock, I. (1962). The moon illusion I. Science, 136, 953--961.
+\end{verbatim}
+
+
+\end{document}

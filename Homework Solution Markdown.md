@@ -1,8 +1,8 @@
-ISyE 6420 "Bayesian Statistics", Spring 2019
-Homework 1 / Solutions
+## ISyE 6420 "Bayesian Statistics", Spring 2019
+## Homework 1 / Solutions
 January 29, 2019
 
-1 Circuit
+### 1 Circuit
 
 Assume that:
 X : e5 works
@@ -18,7 +18,7 @@ P(S) = P(S|X)P(X) + P(S|Y )P(Y )=0.7 ∗ 0.9+0.368 ∗ 0.1=0.6668
 (b) To calculate P(X|S), by Bayes’ rule, we have
 P(X|S) =P(S|X)P(X)P(S)=0.7 ∗ 0.90.6668= 0.9448
 
-2 Multiple Choice
+### 2 Multiple Choice
 We define the following events:
 
 H : The student knows the answer to the question

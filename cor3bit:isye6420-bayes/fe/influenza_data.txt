@@ -1,0 +1,15 @@
+Oker-Blom (1970), 16, 141, 41, 152
+Muldoon (1986), 1, 53, 8, 52
+Monto (1979), 8, 136, 28, 139
+Kantor (1980), 9, 59, 9, 51
+Pettersson (1980), 32, 95, 59, 97
+Quarless (1981), 15, 107, 20, 99
+Dolin (1982), 2, 113, 27, 132
+Reuman (1989), 3, 317, 5, 159
+
+
+#This is a sample of binary data.
+#Input one study in a line;
+#Syntax: study name, e1, n1, e2, n2
+#e1,n1: events and number of experiment group;
+#e2,n2: events and number of control group.

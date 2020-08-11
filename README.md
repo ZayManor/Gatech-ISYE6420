@@ -10,6 +10,7 @@
 * https://github.com/woodyzc/ISYE6420
 * https://github.com/RoryMichelen/Bayesian-Statistics
 * https://github.com/ashkanyousefi/ISYE-6420_Bayesian_Statistics_GA
+* https://github.com/cor3bit/isye6420-bayes
 
 
 ## Resources

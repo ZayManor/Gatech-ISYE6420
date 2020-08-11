@@ -1,0 +1,365 @@
+\documentclass[a4 paper]{article}
+% Set target color model to RGB
+
+
+
+\usepackage[inner=2.0cm,outer=2.0cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage[rgb]{xcolor}
+\usepackage{verbatim}
+\usepackage{subcaption}
+\usepackage{amsgen,amsmath,amstext,amsbsy,amsopn,tikz,amssymb,tkz-linknodes}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, urlcolor=blue,  linkcolor=blue, citecolor=blue]{hyperref}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{rotating}
+%\usetikzlibrary{through,backgrounds}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[capposition=top]{floatrow}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+\usepackage{booktabs}
+\usepackage{changepage}
+\usepackage{float}
+
+
+
+
+
+
+
+
+\hypersetup{%
+pdfauthor={Nick Korbit},%
+pdftitle={Homework},%
+%pdfkeywords={Tikz,latex,bootstrap,uncertaintes},%
+pdfcreator={PDFLaTeX},%
+pdfproducer={PDFLaTeX},%
+}
+%\usetikzlibrary{shadows}
+% \usepackage[francais]{babel}
+\usepackage{booktabs}
+
+
+\input{macros.tex}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%			 Document				  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+	
+\homework{Homework \#3}{Spring 2020}{Roshan Vengazhiyil, Brani Vidakovic}{}{Nick Korbit}{903263968}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%			 Problem 1				  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\problem{1}
+
+\textbf{a$)$.} Let's start with MLE estimate.
+Using Poisson pmf $\frac{\theta^{x} e^{-\theta}}{x !}$
+we first calculate the likelihood $f(x|\theta)$
+based on our experiment data:
+
+$$
+f(x|\theta) = \frac{\theta^{1}e^{-\theta}}{1!}\times\frac{\theta^{2}e^{-\theta}}{2!}\times\frac{\theta^{0}e^{-\theta}}{0!}\times\frac{\theta^{1}e^{-\theta}}{1!}=e^{-4\theta}\left(\theta^{1}\frac{\theta^{2}}{2}\theta^{1}\right)=\frac{e^{-4\theta}\theta^{4}}{2}
+$$
+
+In order to find MLE estimate we need to maximize 
+likelihood $f(x|\theta)$:
+$$
+\hat{\theta}_{MLE}=argmax_{\theta}\frac{e^{-4\theta}\theta^{4}}{2}
+$$
+
+We simplify as follows:
+$$
+\hat{\theta}_{MLE}=argmax_{\theta}e^{-4\theta}\theta^{4}=argmax{}_{\theta}\ln\left(e^{-4\theta}\theta^{4}\right)=argmax_{\theta}\left(4ln\theta-4\theta\right)
+$$
+
+$$
+d/d\theta\left(4ln\theta-4\theta\right)=4/\theta-4;d/d\theta^{2}\left(4ln\theta-\theta\right)=-4/\theta^{2}
+$$
+
+At $\theta=1$ $d/d\theta=0$ and $;d/d\theta^{2}<0$, so we 
+conclude that  $\theta=1$ is a maximum. So that 
+$$
+\hat{\theta}_{MLE}=1
+$$
+
+We now turn to Bayes estimator $\hat{\theta}_b$:
+$$
+\hat{\theta}_{b}\propto f(x|\theta)\pi(\theta)
+$$
+
+For our experiment that means
+$$
+\hat{\theta}_{b}\propto\frac{e^{-4\theta}\theta^{4}}{2}\theta^{-1/2}
+$$
+$$
+\hat{\theta}_{b}\propto e^{-4\theta}\theta^{3.5}
+$$
+
+We can recognize Gamma distribution 
+with parameters $\alpha=4.5$ and $\beta=4$:
+$$
+\hat{\theta}_{b}\propto \mathcal{G}a\left(4.5,4\right)
+$$
+
+The mean of Gamma is $\alpha/\beta$, so that 
+our Bayes estimator becomes:
+
+$$
+\hat{\theta}_{b}=\frac{4.5}{4}=1.125
+$$
+
+
+
+
+
+
+\textbf{b$)$.} We start with the lower bound $L$:
+$$
+\int_{-\infty}^{L} \pi(\theta | x) d \theta=\alpha / 2
+$$
+We can substitute the integral with the Gamma cdf:
+$$
+F_{X}(L) =\alpha / 2
+$$
+We solve for $L$ numerically using the Brent solver 
+implemented via scipy \textit{root\_scalar} function. 
+$$
+F_{X}(L) - 0.05 / 2 = 0; L\approx 0.3375 
+$$
+
+Let's turn to the upper bound $U$:
+$$
+\int_{-\infty}^{U} \pi(\theta | x) d \theta= 1 - \alpha / 2
+$$
+
+Alternatively
+$$
+F_{X}(U) = 1 - \alpha / 2
+$$
+
+Solving for $U$ gives us:
+$$
+F_{X}(U) - 1 + 0.05 / 2 = 0; U \approx 2.3778
+$$
+
+Resulting in the credible set 
+$[0.3375, 2.3778]$ of length $l=2.0403$. \newline 
+
+
+\textbf{c$)$.} In order to find HPD credible set 
+we are essentially optimizing for the shortest 
+credible set. Let's translate the problem into the
+``optimization language'' and solve it 
+with scipy \textit{optimize} package:
+
+We minimize the function $f(L,U)$:
+$$
+f(L,U) = U-L
+$$
+Subject to constraints:
+$$
+U>L
+$$
+$$
+F_{X}(U)-F_{X}(L)\geq1-\alpha
+$$
+
+After providing an initial guess $L=0$ and $U=3$ and
+solving with scipy we obtain
+the HPD credible set $[0.23782339, 2.17403328]$.
+The length of the HPD set 
+is $l \approx 1.9362$. \newline
+
+
+
+\textbf{d$)$.} To find the MAP estimator we need to 
+calculate the mode of the posterior.
+We calculated previously 
+
+$$
+\pi(\theta|x)\propto e^{-4\theta}\theta^{3.5}
+$$
+
+The mode of $\pi(\theta|x)$ is a point 
+where the posterior peaks. To find the mode
+we therefore need to 
+calculate $argmax_{\theta}\pi(\theta|x)$,
+essentially solving
+
+$$
+argmax_{\theta}e^{-4\theta}\theta^{3.5}
+$$
+
+Let's run the scipy minimize procedure:
+
+$$
+\hat{\theta}_{MAP}\approx0.874999997
+$$
+
+Now we check $\hat{\theta}_{MAP}$
+with the analytical value --
+mode of the $\mathcal{G}a\left(4.5,4\right)$:
+
+$$
+mode=\frac{\alpha-1}{\beta}
+$$
+$$
+mode=\frac{4.5-1}{4}=3.5/4 = 0.875 
+$$
+
+We see that, indeed, $$\hat{\theta}_{MAP}=0.875$$ \newline
+
+
+\textbf{e$)$.} Let's start with $p_0$ and $p_1$:
+
+$$
+\begin{array}{l}
+{p_{0}=\int_{\Theta_{0}} \pi(\theta | x) d \theta=\mathbb{P}^{\theta | X}\left(H_{0}\right)} \\
+{p_{1}=\int_{\Theta_{1}} \pi(\theta | x) d \theta=\mathbb{P}^{\theta | X}\left(H_{1}\right)}
+\end{array}
+$$
+
+We use posterior $\mathcal{G}a\left(4.5,4\right)$ cdf 
+to calculate $p_0$ and $p_1$:
+$$
+p_{1}=F_{X}(1.0)\approx0.46585
+$$
+$$
+p_{0}=1-p_{1};p_{0}\approx0.53415
+$$
+
+So, based on the posterior (and the 
+fact that our Jeffreys' prior is non-informative)
+we would prefer hypothesis $H_0$. \newline
+
+
+Note. The script for solving Q1 is implemented in 
+\textit{hw3.py}, function \textit{solve\_q1()} 
+(included in the zip archive). To run the code just run 
+\textit{'python hw3.py'}. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%			 Problem 2				  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\problem{2}
+
+\textbf{a$)$.} Let's start with posterior probabilities 
+$p0$ and $p1$. We know that
+
+$$
+p_{0}=P\left(H_{0} | X\right)=\left[1+\frac{\pi_{1}}{\pi_{0}} \cdot \frac{m_{1}(x)}{f(x | 0.5)}\right]^{-1}
+$$
+
+$$
+f(x | p)=\left(\begin{array}{l}
+{n} \\
+{x}
+\end{array}\right) p^{x}(1-p)^{n-x}
+$$
+
+$$
+m_{1}(x)=\int_{0.5}^{1} f(x | p) 2 d p
+$$
+
+Substituting with our values we get
+$$
+f(x|0.5)=\left(\begin{array}{l}
+16\\
+15
+\end{array}\right)0.5^{15}0.5^{1}=\left(\begin{array}{l}
+16\\
+15
+\end{array}\right)0.5^{16}\approx 0.00024414
+$$
+
+
+$$
+m_{1}(x)=\int_{0.5}^{1}\left(\begin{array}{l}
+16\\
+15
+\end{array}\right)p^{15}(1-p)^{1}2dp=32\int_{0.5}^{1}p^{15}(1-p)^{1}dp=32\int_{0.5}^{1}\left(p^{15}-p^{16}\right)dp
+$$
+
+$$
+m_{1}(x)=32\times\left.\frac{p^{16}}{16}-\frac{p^{17}}{17}\right|_{0.5}^{1}=32\times\left(\left(\frac{1}{16}-\frac{1}{17}\right)-\left(\frac{0.5^{16}}{16}-\frac{0.5^{17}}{17}\right)\right)\approx0.1176309
+$$
+
+$$
+p_{0}=\left[1+\frac{0.05}{0.95}\cdot\frac{0.1176309}{0.00024414}\right]^{-1}\approx0.037938
+$$
+
+$$
+p_1 = 1 - p_0
+$$
+
+$$
+p_1 \approx 1 - 0.037938 \approx 0.962062
+$$
+
+
+We now calculate the Bayes factors:
+$$
+B_{01}=\frac{f(x | 0.5)}{m_{1}(x)}
+$$
+
+$$
+B_{01}\approx\frac{0.00024414}{0.1176309}\approx0.0020755
+$$
+
+$$
+B_{10}=\frac{1}{B_{01}}
+$$
+
+$$
+B_{10}=\frac{1}{0.0020755} \approx 481.816
+$$
+
+
+
+\textbf{b$)$.} Let's calibrate the BF for $H_1$: $log_{10}B_{10}\approx2.68288$.
+According to the Jeffreys' scale 
+we have decisive evidence against 
+$H_0$ ($\log _{10} B_{10}(x)>2$). \newline
+
+Note. The script for solving Q2 is implemented in 
+\textit{hw3.py}, function \textit{solve\_q2()} 
+(included in the zip archive). To run the code just run 
+\textit{'python hw3.py'}. 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%			 Bibliography			  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+
+\bibitem{stat}\label{stat} 
+Engineering Biostatistics: An Introduction using MATLAB and WinBUGS. 
+Brani Vidakovic - Wiley Series in Probability and Statistics.
+
+\end{thebibliography}
+
+
+
+\end{document} 

@@ -13,6 +13,9 @@
 * https://github.com/cor3bit/isye6420-bayes
 
 
-## Resources
-* https://www.coursera.org/courses?query=bayesian%20statistics
-* https://www.coursera.org/learn/bayesian-statistics
+## Coursera Relevant Courses
+* [Coursera Search Result](https://www.coursera.org/courses?query=bayesian%20statistics)
+* [Bayesian Statistics: From Concept to Data Analysis](https://www.coursera.org/learn/bayesian-statistics)
+* [Bayesian Statistics: Techniques and Models](https://www.coursera.org/learn/mcmc-bayesian-statistics)
+* [Bayesian Statistics: Mixture Models](https://www.coursera.org/learn/mixture-models)
+* [Probabilistic Graphical Models](https://www.coursera.org/specializations/probabilistic-graphical-models)

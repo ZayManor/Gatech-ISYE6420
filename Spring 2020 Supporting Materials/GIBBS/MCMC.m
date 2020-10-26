@@ -36,3 +36,9 @@ hist(mus, 40)
 subplot(212)
 hist(taus, 40)
 
+mean(thetas(burn+1:end))
+ var(thetas(burn+1:end))
+ hist(thetas(burn+1:end), 40)
+ prctile(thetas(burn+1:end), 2.5)
+ prctile(thetas(burn+1:end), 97.5)
+

@@ -5,8 +5,8 @@ clear all
 
 rand('seed',1);
 randn('seed',1);
-x = 2; %data
-theta = 1; % initial value
+x = -2; %data
+theta = 0.5; % initial value
 thetas =[theta]; %save all thetas.
 %
 
@@ -14,7 +14,7 @@ tic
  for i = 1:100000
 theta_prop = randn + x;  %N(x,1).
 %--------------------------------------------------------------------------
-r = (1+theta^2)/(1+theta_prop^2);
+r = (theta_prop^(-0.5)*exp(-1.85*theta))/(theta^(-0.5)*exp(-1.85*theta_prop));
 %--------------------------------------------------------------------------
 rho = min(r ,1);
    if (rand < rho)

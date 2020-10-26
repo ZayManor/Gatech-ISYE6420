@@ -1,0 +1,108 @@
+\documentclass[12pt]{article}
+\usepackage{fancybox}
+\usepackage{fullpage}
+\usepackage{color}
+\usepackage{psfig}
+\newcommand{\onef}[3]{
+\begin{center}~
+{\psfig{figure=#1,width=#2,height=#3}} \vskip -0.15truein
+\end{center}}
+%---------------------------------
+
+  \newcommand{\PP}{{\rm I \! P}}
+   \newcommand{\EE}{{\rm I \! E}}
+   \newcommand{\Var}{{\bf Var}}
+   
+     \newcommand{\ba}{\begin{eqnarray*}}
+   	\newcommand{\ea}{\end{eqnarray*}}
+
+\newcommand{\twof}[4]{
+\begin{center}~
+{\psfig{figure=#1,width=#3,height=#4}} \hspace{0.1in}
+{\psfig{figure=#2,width=#3,height=#4}}  \vskip -0.15truein
+\end{center}}
+%---------------------------------
+
+
+
+\definecolor{olive}{rgb}{0.4,0.7,0.2}
+\begin{document}
+
+\thispagestyle{empty}
+%\addtocounter{page}{-1}
+\vspace*{0.5in}
+\begin{center}
+        { \Large \bf     Homework 5 }
+\end{center}
+\noindent {\bf ISyE 6420}
+
+\noindent  Fall 2020
+
+%\noindent Monday, 12/8/2008.
+
+%
+%\vspace{1.0in}
+% \hfill {~~~~~}
+%
+% \hfill {\large Name ~\underline{\hspace{4.3in}} }
+%
+%\vspace{1.0in}
+% \vfill
+%
+%\begin{center}
+%\begin{tabular} {|c|c|c|c|c|c||c|}
+%\hline Problem &  Stroke & Rats & Protein  & Chol/Blood & T/F & Total \\
+%\hline Score   & {~~~~~~~~~/15} & {~~~~~~~~~~/25} & {~~~~~~~~~/25} & {~~~~~~~~~/15} & {~~~~~~~~/20}& {~~~~~~~~/100} \\  \hline
+%\end{tabular}
+%\end{center}
+%
+%\newpage
+
+\vspace{0.3in}
+\noindent
+\noindent {\bf 1. Paddy Soil Adhession.~}
+Pan and Lu (1998) provide measurements of adhesion on 43 pairs of samples of paddy soil to steel and rubber. From 1974 to 1983, during the rice-growing season, the adhesion of soils to steel and to rubber were measured in situ simultaneously in paddy fields in South China. As steel and rubber have long been the most important mate- rials used for wetland running gears such as wheel and track, it is expected that the adhesion to them would be roughly the same. The adhesion was measured with an adhesometer.
+
+Data set \texttt{paddy.dat} has two columns: (1) adhesion to steel, and (2) adhesion to rubber. Both measurements are given in kPa.
+
+(a) Fit the linear regression model where the response variable $y$ is adhesion to rubber. Report the parameter estimates and Bayesian $R^2$ .
+
+(b) What adhesion with rubber do you predict in paddy soil for which adhesion to steel was 2. Find 95\% credible set for a single predictive response.
+
+ \vspace*{0.3in}
+\noindent {\bf 2. Third-degree Burns.~ }  %================================================
+The data for this exercise, discussed in Fan et al. (1995), refer to $n = 435$ adults who were treated for third-degree burns by the University of Southern California General Hospital Burn Center. The patients were grouped according to the area of third-degree burns on the body. For each midpoint of the groupings “$log(area +1)$,” the number of patients in the corresponding group who survived and the number who died from the burns was recorded:
+
+$$\begin{tabular}{ ccc }
+	\hline			
+Log(area+1) & Survived & Died \\
+	\hline
+	1.35 & 13 & 0 \\
+	1.60 & 19 & 0 \\
+	1.75 & 67 & 2  \\
+	1.85 & 45 & 5 \\
+	1.95 & 71 & 8 \\
+	2.05 & 50 & 20 \\
+	2.15 & 35 & 31 \\
+	2.25 & 7 & 49  \\
+	2.35 & 1 & 12  \\
+	\hline  
+\end{tabular}$$
+
+(a) Fit the logistic regression on the probability the covariate \texttt{x} = \texttt{log(area+1)}. What is the deviance?
+
+(b) Using your model, find the posterior probability of survival for a person for which \texttt{log(area + 1)} equals 2.
+
+ \vspace*{0.3in}
+\noindent {\bf 3. $SO_2$, $NO_2$, and Hospital Admissions. ~ } 
+Fan and Chen (1999) discuss a public health data set consisting of daily measurements of pollutants and other environmental factors in Hong Kong between January 1, 1994 and December 31, 1995. The association between levels of pollutants and the number of daily hospital admissions for circulation and respiratory problems is of particular interest.
+
+The data file \texttt{hospitaladmissions.dat} consists of six columns: (1) year, (2) month, (3) day in month, (4) concentration of sulfur dioxide $SO_2$, (5) concentration of pollutant nitrogen $NO_2$, and (6) daily number of hospital admissions.
+
+(a) Fit a Bayesian Poisson regression model, explaining how the expected number of hospital admissions varies with the levels of $SO_2$ and $NO_2$.
+
+(b) Suppose that on a particular day the levels of $SO_2$ and $NO_2$ were measured as 44 and 100, respectively. Estimate the expected number of hospital admissions and report 95\% credible set.
+
+In this problem, only last 3 columns are needed. Use noninformative priors on all pa- rameters in you model.
+
+\end{document}
